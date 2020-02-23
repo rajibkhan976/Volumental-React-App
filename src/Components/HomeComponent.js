@@ -20,34 +20,13 @@ const HomeComponent = () => {
 		})
 		.then(res => res.json().then((value) => {
 			setSampleShoes(value.data);
-		})
-		)
+		}))
 		.catch((error) => {
 			setError(error);
 		});
 	});
 	
-	const organizeChartDataSet = (realData) =>  {
-		
-		let data = {};
-		
-		if (realData.length !== 0) {
-			realData.map((value, index) => {
-				data = Object.assign(data, {
-					labels: Object.keys(value.sizes),
-					datasets: organizeChartData(value.sizes)
-					
-				});
-			})
-		}
-		return data;
-	}
-	
 	const options = {
-						title: {
-						display: true,
-						text: 'Chart.js Bar Chart - Stacked'
-						},
 						tooltips: {
 						mode: 'index',
 						intersect: false
@@ -58,128 +37,99 @@ const HomeComponent = () => {
 								stacked: true
 							}],
 							yAxes: [{
-								stacked: false
+								stacked: true
 							}]
 						},
 						maintainAspectRatio: false 
 					};
 	
+	const organizeChartDataSet = (realData) =>  {
+		
+		let data = {};
+		
+		if (realData.length !== 0) {
+			realData.map((value, index) => {
+				data = Object.assign(data, {
+					labels: Object.keys(value.sizes),
+					datasets: organizeChartData(value.sizes)
+				});
+			})
+		}
+		return data;
+	}
+	
 	const organizeChartData = (sizesObject) => {
+		
+		let bgColorArray = [
+		'red','orange','blue','yellow','pink','grey','black','#800000','#808000','#00FF00'
+		];
 		let barDataObject = [];
+		let widthArray = [];
+		let frequencyArray = [];
+		let barFrequencyArray = [];
 		
-		let widthArray = ['A','B','C','D','E'];
-		let lengthForA = [];
-		let lengthForB = [];
-		let lengthForC = [];
-		let lengthForD = [];
-		let lengthForE = [];
+		for (var length in sizesObject) {
+			for (var width in sizesObject[length]) {
+				if (widthArray.includes(width)) {
+					continue;
+				} else {
+					widthArray.push(width);
+				}
+			}
+		}
 		
+		for (var width = 0; width < widthArray.length; width++) {
+			
 		for (var showInfo in sizesObject) {
-			if (Object.keys(sizesObject[showInfo]).includes('A')) {
+				if (Object.keys(sizesObject[showInfo]).includes(widthArray[width])) {
 				for (var showData in sizesObject[showInfo]) {
-					if (showData === 'A') {
-						lengthForA.push(sizesObject[showInfo][showData]);
+					if (showData === widthArray[width]) {
+						frequencyArray.push(sizesObject[showInfo][showData]);
 					} 
 				}
-			} else {
-				lengthForA.push(0);
-			}
-			if (Object.keys(sizesObject[showInfo]).includes('B')) {
-				for (var showData in sizesObject[showInfo]) {
-					if (showData === 'B') {
-						lengthForB.push(sizesObject[showInfo][showData]);
-					} 
+				} else {
+					frequencyArray.push(0);
 				}
-			} else {
-				lengthForB.push(0);
 			}
-			if (Object.keys(sizesObject[showInfo]).includes('C')) {
-				for (var showData in sizesObject[showInfo]) {
-					if (showData === 'C') {
-						lengthForC.push(sizesObject[showInfo][showData]);
-					} 
-				}
-			} else {
-				lengthForC.push(0);
-			}
-			if (Object.keys(sizesObject[showInfo]).includes('D')) {
-				for (var showData in sizesObject[showInfo]) {
-					if (showData === 'D') {
-						lengthForD.push(sizesObject[showInfo][showData]);
-					} 
-				}
-			} else {
-				lengthForD.push(0);
-			}
-			if (Object.keys(sizesObject[showInfo]).includes('E')) {
-				for (var showData in sizesObject[showInfo]) {
-					if (showData === 'E') {
-						lengthForE.push(sizesObject[showInfo][showData]);
-					} 
-				}
-			} else {
-				lengthForE.push(0);
-			}
+			barFrequencyArray.push(frequencyArray);
+			frequencyArray = [];
 		}
 		
 		for (var c = 0; c < widthArray.length; c++) {
-			if (widthArray[c] === 'A') {
 				barDataObject.push({
 					barThickness: 130,
 					maxBarThickness: 15,
-					minBarLength: 5,
-					backgroundColor: "red",
-					label: 'A',
-					data: lengthForA
+					minBarLength: 2,
+					stack: 'stack shoe sizes',
+					backgroundColor: bgColorArray[c],
+					label: widthArray[c],
+					data: barFrequencyArray[c]
 				});
-			} else if (widthArray[c] === 'B') {
-				barDataObject.push({
-					barThickness: 130,
-					maxBarThickness: 15,
-					minBarLength: 5,
-					backgroundColor: "blue",
-					label: 'B',
-					data: lengthForB
-				});
-			}
-			else if (widthArray[c] === 'C') {
-				barDataObject.push({
-					barThickness: 130,
-					maxBarThickness: 15,
-					minBarLength: 5,
-					backgroundColor: "orange",
-					label: 'C',
-					data: lengthForC
-				});
-			}
-			else if (widthArray[c] === 'D') {
-				barDataObject.push({
-					barThickness: 130,
-					maxBarThickness: 15,
-					minBarLength: 5,
-					backgroundColor: "yellow",
-					label: 'D',
-					data: lengthForD
-				});
-			} else {
-				barDataObject.push({
-					barThickness: 130,
-					maxBarThickness: 15,
-					minBarLength: 5,
-					backgroundColor: "pink",
-					label: 'E',
-					data: lengthForE
-				});
-			}
-			
 		}
-		console.log(widthArray);
+		
 		return barDataObject;
 	}
 	
-	console.log(sampleShoes);
 	return (
 	<div className="container">
+	{sampleShoes ?
+		sampleShoes.map((value, index) => {
+			return <div className="row">
+						<div className="col-sm-6">
+							<div class="alert alert-info" role="alert">
+								System : {value.system}
+							</div>
+						</div>
+						<div className="col-sm-6">
+							<div class="alert alert-info" role="alert">
+								Gender : {value.gender}
+							</div>
+						</div>
+			</div>
+		})
+		:
+		null
+		}
 	  <div className="row">
 		<div className="col-lg-12">
 			<Bar
