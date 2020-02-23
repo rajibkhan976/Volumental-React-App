@@ -99,7 +99,7 @@ const HomeComponent = () => {
 				barDataObject.push({
 					barThickness: 130,
 					maxBarThickness: 15,
-					minBarLength: 2,
+					minBarLength: 1,
 					stack: 'stack shoe sizes',
 					backgroundColor: bgColorArray[c],
 					label: widthArray[c],
@@ -114,14 +114,14 @@ const HomeComponent = () => {
 	<div className="container">
 	{sampleShoes ?
 		sampleShoes.map((value, index) => {
-			return <div className="row">
+			return <div className="row" key={index}>
 						<div className="col-sm-6">
-							<div class="alert alert-info" role="alert">
+							<div className="alert alert-info" role="alert">
 								System : {value.system}
 							</div>
 						</div>
 						<div className="col-sm-6">
-							<div class="alert alert-info" role="alert">
+							<div className="alert alert-info" role="alert">
 								Gender : {value.gender}
 							</div>
 						</div>
@@ -130,16 +130,26 @@ const HomeComponent = () => {
 		:
 		null
 		}
-	  <div className="row">
-		<div className="col-lg-12">
-			<Bar
-			  data={organizeChartDataSet(sampleShoes)}
-			  width={100}
-			  height={500}
-			  options={options}
-			/>
+		{(!error && sampleShoes) ?
+		<div className="row">
+			<div className="col-lg-12">
+				<Bar
+				  data={organizeChartDataSet(sampleShoes)}
+				  width={100}
+				  height={500}
+				  options={options}
+				/>
+			</div>
 		</div>
-	  </div>
+		:
+		<div className="row">
+			<div className="col-lg-12">
+				<div className="alert alert-danger" role="alert">
+					{`Ooops there is a server error!`}
+				</div>
+			</div>
+		</div>
+		}
 	</div>
 	);
 }
