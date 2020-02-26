@@ -24,7 +24,7 @@ const HomeComponent = () => {
 		.catch((error) => {
 			setError(error);
 		});
-	});
+	}, []);
 	
 	const options = {
 						tooltips: {
