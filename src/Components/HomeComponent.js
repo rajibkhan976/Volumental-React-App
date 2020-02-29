@@ -43,7 +43,7 @@ const HomeComponent = () => {
 						maintainAspectRatio: false 
 					};
 	
-	const organizeChartDataSet = (realData) =>  {
+	const organizeChartData = (realData) =>  {
 		
 		let data = {};
 		
@@ -51,14 +51,14 @@ const HomeComponent = () => {
 			realData.map((value, index) => {
 				data = Object.assign(data, {
 					labels: Object.keys(value.sizes),
-					datasets: organizeChartData(value.sizes)
+					datasets: organizeChartDataSet(value.sizes)
 				});
 			})
 		}
 		return data;
 	}
 	
-	const organizeChartData = (sizesObject) => {
+	const organizeChartDataSet = (sizesObject) => {
 		
 		let bgColorArray = [
 		'red','orange','blue','yellow','pink','grey','black','#800000','#808000','#00FF00'
@@ -134,7 +134,7 @@ const HomeComponent = () => {
 		<div className="row">
 			<div className="col-lg-12">
 				<Bar
-				  data={organizeChartDataSet(sampleShoes)}
+				  data={organizeChartData(sampleShoes)}
 				  width={100}
 				  height={500}
 				  options={options}
